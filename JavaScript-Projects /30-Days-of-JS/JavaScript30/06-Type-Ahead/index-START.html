@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Type Ahead 👀</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://fav.farm/🔥" />
+  <link rel="icon" href="https://fav.farm/🏙️" />
 </head>
+
 <body>
 
   <form class="search-form">
@@ -15,9 +17,45 @@
       <li>or a state</li>
     </ul>
   </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  <script>
+  // endpoint URL: will grant access to the cities array.
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+   // the const cities will convert from blob info the a blob json that will grant access to retrieve the searched city from the array.
+    const cities = [];
+    fetch(endpoint)
+      .then(blob => blob.json())
+      .then(data => cities.push(...data));
+      console.log(cities);
 
-</script>
+      function findMatches(wordToMatch,cities) {
+        // will find out if the city or state matches with what was searched
+        return cities.filter(place =>{
+          const regex = new RegExp(wordToMatch, 'gi')
+          return  place.city.match(regex) || place.state.match(regex);
+        });
+      }
+
+      function displayMatches(){
+        const matchArray = findMatches(this.value, cities);
+                console.log(matchArray);
+        const html = matchArray.map(place => {
+          return`
+          <li>
+            <span class="name">${place.city}, ${place.state}</span>
+           <span class="population">${place.population}</span>
+           </li>
+          `;
+        }).join('');
+        suggestions. innerHTML = html;
+
+      }
+      const searchInput = document.querySelector('.search')
+      const suggestions = document.querySelector('.suggestions');
+
+      searchInput.addEventListener('change', displayMatches);
+      searchInput.addEventListener('keyup', displayMatches);
+
+  </script>
 </body>
+
 </html>
